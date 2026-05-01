@@ -173,7 +173,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         final color =
                             _cardColors[index % _cardColors.length];
                         final emoji =
-                            _cardEmojis[index % _cardEmojis.length];
+
                         return GestureDetector(
                           onTap: () {
                             Navigator.push(
@@ -197,28 +197,51 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               ],
                             ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(20),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    emoji,
-                                    style: const TextStyle(fontSize: 36),
-                                  ),
-                                  Text(
-                                    category.name,
-                                    style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
+                            child: Column(
+  crossAxisAlignment: CrossAxisAlignment.start,
+  children: [
+    Expanded(
+      child: ClipRRect(
+        borderRadius: const BorderRadius.vertical(
+          top: Radius.circular(20),
+        ),
+        child: category.iconUrl != null
+            ? Image.network(
+                category.iconUrl!,
+                width: double.infinity,
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) => Container(
+                  color: Colors.white.withOpacity(0.2),
+                  child: const Icon(
+                    Icons.image_outlined,
+                    color: Colors.white,
+                    size: 40,
+                  ),
+                ),
+              )
+            : Container(
+                color: Colors.white.withOpacity(0.2),
+                child: const Icon(
+                  Icons.category_outlined,
+                  color: Colors.white,
+                  size: 40,
+                ),
+              ),
+      ),
+    ),
+    Padding(
+      padding: const EdgeInsets.all(12),
+      child: Text(
+        category.name,
+        style: const TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+      ),
+    ),
+  ],
+),
                           ),
                         );
                       },
