@@ -10,7 +10,7 @@ class SupabaseService {
     final response = await _client
         .from('categories')
         .select()
-        .order('id');
+        .order('name', ascending: true);
     return (response as List)
         .map((json) => Category.fromJson(json))
         .toList();
