@@ -40,22 +40,43 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F6FA),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFF5F6FA),
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Color(0xFF1B1F3B)),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Text(
-          widget.category.name,
-          style: const TextStyle(
-            color: Color(0xFF1B1F3B),
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
-          ),
+      appBar: PreferredSize(
+  preferredSize: const Size.fromHeight(70),
+  child: Container(
+    decoration: const BoxDecoration(
+      color: Color(0xFFF5F6FA),
+      border: Border(
+        bottom: BorderSide(
+          color: Color(0xFFE2E8F0),
+          width: 1,
         ),
       ),
+    ),
+    child: SafeArea(
+      child: Row(
+        children: [
+          IconButton(
+            icon: const Icon(Icons.arrow_back_ios, color: Color(0xFF1B1F3B)),
+            onPressed: () => Navigator.pop(context),
+          ),
+          Expanded(
+            child: Center(
+              child: Text(
+                widget.category.name,
+                style: const TextStyle(
+                  color: Color(0xFF1B1F3B),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 48),
+        ],
+      ),
+    ),
+  ),
+),
       body: _isLoading
           ? const Center(
               child: CircularProgressIndicator(color: Color(0xFF6C63FF)),

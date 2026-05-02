@@ -6,10 +6,12 @@ import 'package:lemread/screens/quiz_result_screen.dart';
 class QuizScreen extends StatefulWidget {
   final int articleId;
   final String articleTitle;
+  final String? articleImageUrl;
   const QuizScreen({
     super.key,
     required this.articleId,
     required this.articleTitle,
+    this.articleImageUrl,
   });
 
   @override
@@ -62,7 +64,7 @@ class _QuizScreenState extends State<QuizScreen> {
         _answered = false;
       });
     } else {
-      Navigator.pushReplacement(
+      Navigator.pushReplacement( 
         context,
         MaterialPageRoute(
           builder: (_) => QuizResultScreen(
@@ -94,130 +96,204 @@ class _QuizScreenState extends State<QuizScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F6FA),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFF5F6FA),
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.close, color: Color(0xFF1B1F3B)),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Text(
-          widget.articleTitle,
-          style: const TextStyle(
-            color: Color(0xFF1B1F3B),
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-          ),
-          overflow: TextOverflow.ellipsis,
-        ),
-      ),
       body: _isLoading
           ? const Center(
               child: CircularProgressIndicator(color: Color(0xFF6C63FF)),
             )
           : _questions.isEmpty
-              ? const Center(
-                  child: Text(
-                    'Bu makale için soru bulunamadı.',
-                    style: TextStyle(color: Color(0xFF8A8A8A), fontSize: 16),
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        'Bu makale için soru bulunamadı.',
+                        style:
+                            TextStyle(color: Color(0xFF787679), fontSize: 16),
+                      ),
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: () => Navigator.pop(context),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF6C63FF),
+                          foregroundColor: Colors.white,
+                        ),
+                        child: const Text('Geri Dön'),
+                      ),
+                    ],
                   ),
                 )
-              : Padding(
-                  padding: const EdgeInsets.all(24),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // İlerleme çubuğu
-                      Row(
+              : Column(
+                  children: [
+                    // Üst görsel alan
+                    SizedBox(
+                      height: 200,
+                      child: Stack(
+                        fit: StackFit.expand,
                         children: [
-                          Text(
-                            '${_currentIndex + 1}/${_questions.length}',
-                            style: const TextStyle(
-                              color: Color(0xFF6C63FF),
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
+                          widget.articleImageUrl != null
+                              ? Image.network(
+                                  widget.articleImageUrl!,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (_, __, ___) => Container(
+                                    color: const Color(0xFF6C63FF),
+                                  ),
+                                )
+                              : Container(color: const Color(0xFF6C63FF)),
+                          Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  Colors.black.withOpacity(0.3),
+                                  Colors.black.withOpacity(0.5),
+                                ],
+                              ),
                             ),
                           ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(4),
-                              child: LinearProgressIndicator(
-                                value: (_currentIndex + 1) /
-                                    _questions.length,
-                                backgroundColor:
-                                    const Color(0xFF6C63FF).withOpacity(0.15),
-                                valueColor:
-                                    const AlwaysStoppedAnimation<Color>(
-                                        Color(0xFF6C63FF)),
-                                minHeight: 8,
+                          SafeArea(
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  GestureDetector(
+                                    onTap: () => Navigator.pop(context),
+                                    child: Container(
+                                      padding: const EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white.withOpacity(0.2),
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: const Icon(Icons.close,
+                                          color: Colors.white, size: 20),
+                                    ),
+                                  ),
+                                  const Spacer(),
+                                  Padding(
+                                    padding: const EdgeInsets.fromLTRB(
+                                        12, 0, 12, 16),
+                                    child: Text(
+                                      widget.articleTitle,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        height: 1.3,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 32),
-                      // Soru
-                      Container(
-                        width: double.infinity,
+                    ),
+                    // İçerik
+                    Expanded(
+                      child: Padding(
                         padding: const EdgeInsets.all(24),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF6C63FF),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Text(
-                          _questions[_currentIndex].question,
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
-                            height: 1.5,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 24),
-                      // Şıklar
-                      Expanded(
-                        child: ListView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            _buildOption('a',
-                                _questions[_currentIndex].optionA),
-                            _buildOption('b',
-                                _questions[_currentIndex].optionB),
-                            _buildOption('c',
-                                _questions[_currentIndex].optionC),
-                            _buildOption('d',
-                                _questions[_currentIndex].optionD),
+                            // İlerleme çubuğu
+                            Row(
+                              children: [
+                                Text(
+                                  '${_currentIndex + 1}/${_questions.length}',
+                                  style: const TextStyle(
+                                    color: Color(0xFF6C63FF),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(4),
+                                    child: LinearProgressIndicator(
+                                      value: (_currentIndex + 1) /
+                                          _questions.length,
+                                      backgroundColor: const Color(0xFF6C63FF)
+                                          .withOpacity(0.15),
+                                      valueColor:
+                                          const AlwaysStoppedAnimation<Color>(
+                                              Color(0xFF6C63FF)),
+                                      minHeight: 8,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 24),
+                            // Soru
+                            Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.all(24),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF6C63FF),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Text(
+                                _questions[_currentIndex].question,
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white,
+                                  height: 1.5,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            // Şıklar
+                            Expanded(
+                              child: ListView(
+                                children: [
+                                  _buildOption(
+                                      'a', _questions[_currentIndex].optionA),
+                                  _buildOption(
+                                      'b', _questions[_currentIndex].optionB),
+                                  _buildOption(
+                                      'c', _questions[_currentIndex].optionC),
+                                  _buildOption(
+                                      'd', _questions[_currentIndex].optionD),
+                                ],
+                              ),
+                            ),
+                            // Devam butonu
+                            if (_answered)
+                              SizedBox(
+                                width: double.infinity,
+                                height: 56,
+                                child: ElevatedButton(
+                                  onPressed: _nextQuestion,
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xFF6C63FF),
+                                    foregroundColor: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    _currentIndex < _questions.length - 1
+                                        ? 'Sonraki Soru'
+                                        : 'Sonucu Gör',
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              ),
                           ],
                         ),
                       ),
-                      // Devam butonu
-                      if (_answered)
-                        SizedBox(
-                          width: double.infinity,
-                          height: 56,
-                          child: ElevatedButton(
-                            onPressed: _nextQuestion,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF6C63FF),
-                              foregroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                            ),
-                            child: Text(
-                              _currentIndex < _questions.length - 1
-                                  ? 'Sonraki Soru'
-                                  : 'Sonucu Gör',
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
     );
   }
