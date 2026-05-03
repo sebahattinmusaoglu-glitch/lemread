@@ -14,22 +14,22 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   final List<Map<String, String>> _pages = [
     {
-      'title': 'Keşfet',
+      'title': 'Merak ettiğin her şey burada',
       'description':
-          'Bilim, tarih, sanat ve daha fazlası. İlgini çeken konuları keşfet ve okumaya başla.',
-      'emoji': '🔭',
+          'Bilimden tarihe, sanattan teknolojiye yüzlerce makale seni bekliyor.',
+      'imageUrl': 'https://vfjvvlynxowepuqepulz.supabase.co/storage/v1/object/public/images/icons/01onboarding_1.png',
     },
     {
-      'title': 'Oku ve Öğren',
+      'title': 'İlgini çeken konuyu seç',
       'description':
           'Her makale seni yeni bir dünyaya götürür. Kısa ve öz içeriklerle bilgini genişlet.',
-      'emoji': '📖',
+      'imageUrl': 'https://vfjvvlynxowepuqepulz.supabase.co/storage/v1/object/public/images/icons/02onboarding_2.png',
     },
     {
-      'title': 'Kendini Test Et',
+      'title': 'Okuduğunu kanıtla',
       'description':
-          'Okuduğunu ne kadar anladın? Mini quizlerle bilgini pekiştir ve gelişimini takip et.',
-      'emoji': '🎯',
+          'Her makalenin sonunda kısa bir test seni bekliyor. Ne kadar anladığını kendin gör.',
+      'imageUrl': 'https://vfjvvlynxowepuqepulz.supabase.co/storage/v1/object/public/images/icons/03onboarding_3.png',
     },
   ];
 
@@ -78,22 +78,28 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Container(
-                          width: 150,
-                          height: 150,
+                          width: 200,
+                          height: 200,
                           decoration: BoxDecoration(
                             color: const Color(0xFF6C63FF).withOpacity(0.1),
                             shape: BoxShape.circle,
                           ),
-                          child: Center(
-                            child: Text(
-                              _pages[index]['emoji']!,
-                              style: const TextStyle(fontSize: 70),
+                          child: ClipOval(
+                            child: Image.network(
+                              _pages[index]['imageUrl']!,
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, __, ___) => const Icon(
+                                Icons.image_outlined,
+                                size: 60,
+                                color: Color(0xFF6C63FF),
+                              ),
                             ),
                           ),
                         ),
                         const SizedBox(height: 48),
                         Text(
                           _pages[index]['title']!,
+                          textAlign: TextAlign.center,
                           style: const TextStyle(
                             fontSize: 28,
                             fontWeight: FontWeight.bold,

@@ -16,9 +16,10 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _navigate() async {
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 3));
     final prefs = await SharedPreferences.getInstance();
-    final onboardingDone = prefs.getBool('onboarding_done') ?? false;
+    final onboardingDone = false;
+    // final onboardingDone = prefs.getBool('onboarding_done') ?? false;
     if (mounted) {
       if (onboardingDone) {
         Navigator.pushReplacementNamed(context, '/home');
@@ -36,21 +37,30 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
-              width: 80,
-              height: 80,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                gradient: const LinearGradient(
-                  begin: Alignment.topRight,
-                  end: Alignment.bottomLeft,
-                  colors: [Color(0xFF7D7CFE), Color(0xFF5946F9)],
+            ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: Image.network(
+                'https://vfjvvlynxowepuqepulz.supabase.co/storage/v1/object/public/images/icons/main_icon.png',
+                width: 80,
+                height: 80,
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) => Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    gradient: const LinearGradient(
+                      begin: Alignment.topRight,
+                      end: Alignment.bottomLeft,
+                      colors: [Color(0xFF7D7CFE), Color(0xFF5946F9)],
+                    ),
+                  ),
+                  child: const Icon(
+                    Icons.auto_stories,
+                    color: Colors.white,
+                    size: 40,
+                  ),
                 ),
-              ),
-              child: const Icon(
-                Icons.auto_stories,
-                color: Colors.white,
-                size: 40,
               ),
             ),
             const SizedBox(height: 24),
