@@ -164,7 +164,7 @@ class QuizResultScreen extends StatelessWidget {
                       onPressed: () => Navigator.pop(context),
                       icon: const Icon(Icons.replay_rounded),
                       label: const Text(
-                        'Testi Tekrar Çöz',
+                        'Makaleye Dön',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w600,

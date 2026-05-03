@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lemread/models/article.dart';
 import 'package:lemread/screens/quiz_screen.dart';
 import 'package:lemread/services/supabase_service.dart';
+import 'package:lemread/services/turkish_helper.dart';
 import 'package:lemread/models/category.dart';
 
 class ArticleScreen extends StatefulWidget {
@@ -32,7 +33,7 @@ class _ArticleScreenState extends State<ArticleScreen> {
         (c) => c.id == widget.article.categoryId,
         orElse: () => Category(id: 0, name: ''),
       );
-      setState(() => _categoryName = category.name.toUpperCase());
+      setState(() => _categoryName = category.name.toTurkishUpperCase());
     } catch (e) {
       setState(() => _categoryName = '');
     }
@@ -159,21 +160,27 @@ SliverToBoxAdapter(
               height: 56,
               child: ElevatedButton.icon(
                 onPressed: _showQuizButton
-                    ? () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => QuizScreen(
+                  ? () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => QuizScreen(
                             articleId: widget.article.id,
                             articleTitle: widget.article.title,
                             articleImageUrl: widget.article.imageUrl,
                             categoryId: widget.article.categoryId,
                             categoryName: _categoryName,
                           ),
-                          ),
+                        ),
+                      ).then((_) {
+                        _scrollController.animateTo(
+                          0,
+                          duration: const Duration(milliseconds: 500),
+                          curve: Curves.easeInOut,
                         );
-                      }
-                    : null,
+                      });
+                    }
+                  : null,
                 icon: const Icon(Icons.quiz_outlined),
                 label: const Text(
                   'Testi Çöz',
