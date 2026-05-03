@@ -16,6 +16,7 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
   final SupabaseService _service = SupabaseService();
   List<Article> _articles = [];
   bool _isLoading = true;
+  bool _hasError = false;
 
   @override
   void initState() {
@@ -30,16 +31,20 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
       setState(() {
         _articles = articles;
         _isLoading = false;
+        _hasError = false;
       });
     } catch (e) {
-      setState(() => _isLoading = false);
+      setState(() {
+        _isLoading = false;
+        _hasError = true;
+      });
     }
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) { 
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F6FA),
+      backgroundColor: const Color(0xFFF5F6FA), 
       appBar: PreferredSize(
   preferredSize: const Size.fromHeight(70),
   child: Container(
@@ -81,7 +86,57 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
           ? const Center(
               child: CircularProgressIndicator(color: Color(0xFF6C63FF)),
             )
-          : _articles.isEmpty
+          : _hasError
+              ? Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(32),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text('📡', style: TextStyle(fontSize: 48)),
+                        const SizedBox(height: 16),
+                        const Text(
+                          'İnternet Bağlantısı Kurulamadı',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF1B1F3B),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        const Text(
+                          'Güncel içerikler için internet bağlantını kontrol edip tekrar dene.',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Color(0xFF787679),
+                            height: 1.5,
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        ElevatedButton.icon(
+                          onPressed: () {
+                            setState(() {
+                              _isLoading = true;
+                              _hasError = false;
+                            });
+                            _loadArticles();
+                          },
+                          icon: const Icon(Icons.refresh),
+                          label: const Text('Tekrar Dene'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF6C63FF),
+                            foregroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              : _articles.isEmpty
               ? const Center(
                   child: Text(
                     'Henüz içerik yok.',
@@ -89,7 +144,7 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
                   ),
                 )
               : ListView.builder(
-                  padding: const EdgeInsets.all(24),
+                  padding: const EdgeInsets.fromLTRB(24, 24, 24, 64),
                   itemCount: _articles.length,
                   itemBuilder: (context, index) {
                     final article = _articles[index];

@@ -15,6 +15,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Category> _categories = [];
   List<Category> _filteredCategories = [];
   bool _isLoading = true;
+  bool _hasError = false;
   int _currentIndex = 0;
   final TextEditingController _searchController = TextEditingController();
 
@@ -47,9 +48,13 @@ class _HomeScreenState extends State<HomeScreen> {
         _categories = categories;
         _filteredCategories = categories;
         _isLoading = false;
+        _hasError = false;
       });
     } catch (e) {
-      setState(() => _isLoading = false);
+      setState(() {
+        _isLoading = false;
+        _hasError = true;
+      });
     }
   }
 
@@ -85,9 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ],
         ),
-        child: SizedBox(
-          height: 80,
-          child: BottomNavigationBar(
+        child: BottomNavigationBar(
           currentIndex: _currentIndex,
           onTap: (index) => setState(() => _currentIndex = index),
           backgroundColor: Colors.white,
@@ -111,7 +114,6 @@ class _HomeScreenState extends State<HomeScreen> {
               label: 'Profil',
             ),
           ],
-        ),
         ),
       ),
     );
@@ -144,9 +146,26 @@ class _HomeScreenState extends State<HomeScreen> {
                           borderRadius: BorderRadius.circular(10),
                           child: Image.network(
                             'https://vfjvvlynxowepuqepulz.supabase.co/storage/v1/object/public/images/icon-logo.png',
-                            width: 40,
-                            height: 37,
+                            width: 36,
+                            height: 36,
                             fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) => Container(
+                              width: 36,
+                              height: 36,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                gradient: const LinearGradient(
+                                  begin: Alignment.topRight,
+                                  end: Alignment.bottomLeft,
+                                  colors: [Color(0xFF7D7CFE), Color(0xFF5946F9)],
+                                ),
+                              ),
+                              child: const Icon(
+                                Icons.auto_stories,
+                                color: Colors.white,
+                                size: 20,
+                              ),
+                            ),
                           ),
                         ),
                         const SizedBox(width: 10), 
@@ -259,6 +278,58 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                 )
+              : _hasError
+                  ? SliverFillRemaining(
+                      child: Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(32),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text('📡', style: TextStyle(fontSize: 48)),
+                              const SizedBox(height: 16),
+                              const Text(
+                                'İnternet Bağlantısı Kurulamadı',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF1B1F3B),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              const Text(
+                                'Güncel içerikler için internet bağlantını kontrol edip tekrar dene.',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  color: Color(0xFF787679),
+                                  height: 1.5,
+                                ),
+                              ),
+                              const SizedBox(height: 24),
+                              ElevatedButton.icon(
+                                onPressed: () {
+                                  setState(() {
+                                    _isLoading = true;
+                                    _hasError = false;
+                                  });
+                                  _loadCategories();
+                                },
+                                icon: const Icon(Icons.refresh),
+                                label: const Text('Tekrar Dene'),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFF6C63FF),
+                                  foregroundColor: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
               : _filteredCategories.isEmpty
                   ? const SliverFillRemaining(
                       child: Center(

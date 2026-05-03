@@ -150,7 +150,7 @@ SliverToBoxAdapter(
               height: 1.8,
             ),
           ),
-          const SizedBox(height: 40),
+          const SizedBox(height: 40), 
           AnimatedOpacity(
             opacity: _showQuizButton ? 1.0 : 0.0,
             duration: const Duration(milliseconds: 500),
@@ -190,7 +190,7 @@ SliverToBoxAdapter(
               ),
             ),
           ),
-          const SizedBox(height: 32),
+          const SizedBox(height: 48), // 
         ],
       ),
     ),

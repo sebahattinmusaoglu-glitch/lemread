@@ -195,8 +195,8 @@ class _QuizScreenState extends State<QuizScreen> {
                     ),
                     // İçerik
                     Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(24),
+                      child: Padding( 
+                        padding: EdgeInsets.fromLTRB(24, 24, 24, 24 + MediaQuery.of(context).padding.bottom),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -229,8 +229,8 @@ class _QuizScreenState extends State<QuizScreen> {
                                 ),
                               ],
                             ),
-                            const SizedBox(height: 24),
-                            // Soru
+                            const SizedBox(height: 12), 
+                            // Soru 
                             Container(
                               width: double.infinity,
                               padding: const EdgeInsets.all(24),
@@ -248,10 +248,11 @@ class _QuizScreenState extends State<QuizScreen> {
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 8),
                             // Şıklar
                             Expanded(
                               child: ListView(
+                                padding: EdgeInsets.zero,
                                 children: [
                                   _buildOption(
                                       'a', _questions[_currentIndex].optionA),
@@ -265,10 +266,11 @@ class _QuizScreenState extends State<QuizScreen> {
                               ),
                             ),
                             // Devam butonu
+                            if (_answered) const SizedBox(height:8),
                             if (_answered)
                               SizedBox(
                                 width: double.infinity,
-                                height: 56,
+                                height: 56, // 
                                 child: ElevatedButton(
                                   onPressed: _nextQuestion,
                                   style: ElevatedButton.styleFrom(
