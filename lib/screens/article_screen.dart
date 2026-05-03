@@ -164,10 +164,12 @@ SliverToBoxAdapter(
                           context,
                           MaterialPageRoute(
                             builder: (_) => QuizScreen(
-                              articleId: widget.article.id,
-                              articleTitle: widget.article.title,
-                              articleImageUrl: widget.article.imageUrl,
-                            ),
+                            articleId: widget.article.id,
+                            articleTitle: widget.article.title,
+                            articleImageUrl: widget.article.imageUrl,
+                            categoryId: widget.article.categoryId,
+                            categoryName: _categoryName,
+                          ),
                           ),
                         );
                       }
@@ -190,7 +192,7 @@ SliverToBoxAdapter(
               ),
             ),
           ),
-          const SizedBox(height: 48), // 
+          const SizedBox(height: 32), //
         ],
       ),
     ),

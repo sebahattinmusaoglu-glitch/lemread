@@ -4,15 +4,19 @@ import 'package:lemread/services/supabase_service.dart';
 import 'package:lemread/screens/quiz_result_screen.dart';
 
 class QuizScreen extends StatefulWidget {
-  final int articleId;
-  final String articleTitle;
-  final String? articleImageUrl;
-  const QuizScreen({
-    super.key,
-    required this.articleId,
-    required this.articleTitle,
-    this.articleImageUrl,
-  });
+final int articleId;
+final String articleTitle;
+final String? articleImageUrl;
+final int? categoryId;
+final String? categoryName;
+const QuizScreen({
+  super.key,
+  required this.articleId,
+  required this.articleTitle,
+  this.articleImageUrl,
+  this.categoryId,
+  this.categoryName,
+});
 
   @override
   State<QuizScreen> createState() => _QuizScreenState();
@@ -68,10 +72,12 @@ class _QuizScreenState extends State<QuizScreen> {
         context,
         MaterialPageRoute(
           builder: (_) => QuizResultScreen(
-            correct: _correctCount,
-            total: _questions.length,
-            articleTitle: widget.articleTitle,
-          ),
+          correct: _correctCount,
+          total: _questions.length,
+          articleTitle: widget.articleTitle,
+          categoryId: widget.categoryId,
+          categoryName: widget.categoryName,
+        ),
         ),
       );
     }

@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:lemread/models/category.dart';
+import 'package:lemread/screens/category_detail_screen.dart';
 
 class QuizResultScreen extends StatelessWidget {
   final int correct;
   final int total;
   final String articleTitle;
+  final int? categoryId;
+  final String? categoryName;
 
   const QuizResultScreen({
     super.key,
     required this.correct,
     required this.total,
     required this.articleTitle,
+    this.categoryId,
+    this.categoryName,
   });
 
   String get _resultEmoji {
@@ -43,30 +49,27 @@ class QuizResultScreen extends StatelessWidget {
       body: Column(
         children: [
           // Header
-          PreferredSize(
-            preferredSize: const Size.fromHeight(70),
-            child: Container(
-              decoration: const BoxDecoration(
-                color: Color(0xFFF5F6FA),
-                border: Border(
-                  bottom: BorderSide(
-                    color: Color(0xFFE2E8F0),
-                    width: 1,
-                  ),
+          Container(
+            decoration: const BoxDecoration(
+              color: Color(0xFFF5F6FA),
+              border: Border(
+                bottom: BorderSide(
+                  color: Color(0xFFE2E8F0),
+                  width: 1,
                 ),
               ),
-              child: SafeArea(
-                bottom: false,
-                child: SizedBox(
-                  height: 70,
-                  child: const Center(
-                    child: Text(
-                      'Testi Tamamladın',
-                      style: TextStyle(
-                        color: Color(0xFF1B1F3B),
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                      ),
+            ),
+            child: SafeArea(
+              bottom: false,
+              child: SizedBox(
+                height: 70,
+                child: const Center(
+                  child: Text(
+                    'Testi Tamamladın',
+                    style: TextStyle(
+                      color: Color(0xFF1B1F3B),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
                     ),
                   ),
                 ),
@@ -76,14 +79,14 @@ class QuizResultScreen extends StatelessWidget {
           // İçerik
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
+              padding: const EdgeInsets.symmetric(horizontal: 24), 
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 32), 
+                  const SizedBox(height: 32),
                   Text(
                     _resultEmoji,
-                    style: const TextStyle(fontSize: 64),
+                    style: const TextStyle(fontSize: 48),
                   ),
                   const SizedBox(height: 16),
                   Text(
@@ -94,7 +97,7 @@ class QuizResultScreen extends StatelessWidget {
                       color: Color(0xFF1B1F3B),
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 12), 
                   Text(
                     _resultMessage,
                     textAlign: TextAlign.center,
@@ -104,11 +107,11 @@ class QuizResultScreen extends StatelessWidget {
                       height: 1.5,
                     ),
                   ),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 16), 
                   // Skor kartı
                   Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.all(32),
+                    padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
                       color: const Color(0xFF6C63FF),
                       borderRadius: BorderRadius.circular(24),
@@ -152,7 +155,7 @@ class QuizResultScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 64), // 
+                  const SizedBox(height: 32),
                   // Testi tekrar çöz
                   SizedBox(
                     width: double.infinity,
@@ -177,6 +180,43 @@ class QuizResultScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 16),
+                  // Kategoriye dön
+                  if (categoryId != null && categoryName != null)
+                    SizedBox(
+                      width: double.infinity,
+                      height: 56,
+                      child: OutlinedButton(
+                        onPressed: () {
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => CategoryDetailScreen(
+                                category: Category(
+                                  id: categoryId!,
+                                  name: categoryName!,
+                                ),
+                              ),
+                            ),
+                            (route) => route.isFirst,
+                          );
+                        },
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: const Color(0xFF6C63FF),
+                          side: const BorderSide(color: Color(0xFF6C63FF)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        ),
+                        child: Text(
+                          '$categoryName Kategorisine Dön',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                  const SizedBox(height: 16),
                   // Ana sayfaya dön
                   SizedBox(
                     width: double.infinity,
@@ -197,9 +237,9 @@ class QuizResultScreen extends StatelessWidget {
                         ),
                       ),
                       child: const Text(
-                        'Ana Sayfaya Dön',
+                        'Tüm Kategoriler',
                         style: TextStyle(
-                          fontSize: 18,
+                          fontSize: 16,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
